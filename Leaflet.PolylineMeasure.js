@@ -63,10 +63,15 @@
              */
             decimalPlaces : 2,
             /**
-             * Whether to show point tooltips, Last will always be shown
+             * Whether to show point tooltips, Last points will always be shown
              * @type {boolean}
              */
-             showTooltip : true,
+            showToolTips : true,
+             /**
+             * Whether to always use decimal places for totals
+             * @type {boolean}
+             */
+            alwaysUseDecimalPlacesOption : false,
             /**
              * Clear the measurements on stop
              * @type {Boolean}
@@ -625,32 +630,32 @@
             if (this.options.unit === 'nauticalmiles') {
                 unit = this.options.unitControlLabel.nauticalmiles;
                 if (dist >= 185200) {
-                    dist = (dist/1852).toFixed(this.options.decimalPlaces);
+                    dist = (dist/1852).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 0 : this.options.decimalPlaces);
                 } else if (dist >= 18520) {
-                    dist = (dist/1852).toFixed(this.options.decimalPlaces);
+                    dist = (dist/1852).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 1 : this.options.decimalPlaces);
                 } else if (dist >= 1852) {
                     dist = (dist/1852).toFixed(this.options.decimalPlaces);
                 } else  {
                     if (this.options.distanceShowSameUnit) {
-                        dist = (dist/1852).toFixed(this.options.decimalPlaces);
+                        dist = (dist/1852).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 3 : this.options.decimalPlaces);
                     } else {
-                        dist = (dist/0.3048).toFixed(this.options.decimalPlaces);
+                        dist = (dist/0.3048).toFixed(0);
                         unit = this.options.unitControlLabel.feet;
                     }
                 }
             } else if (this.options.unit === 'landmiles') {
                 unit = this.options.unitControlLabel.landmiles;
                 if (dist >= 160934.4) {
-                    dist = (dist/1609.344).toFixed(this.options.decimalPlaces);
+                    dist = (dist/1609.344).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 0 : this.options.decimalPlaces);
                 } else if (dist >= 16093.44) {
-                    dist = (dist/1609.344).toFixed(this.options.decimalPlaces);
+                    dist = (dist/1609.344).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 1 : this.options.decimalPlaces);
                 } else if (dist >= 1609.344) {
                     dist = (dist/1609.344).toFixed(this.options.decimalPlaces);
                 } else {
                     if (this.options.distanceShowSameUnit) {
-                        dist = (dist/1609.344).toFixed(this.options.decimalPlaces);
+                        dist = (dist/1609.344).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 3 : this.options.decimalPlaces);
                     } else {
-                        dist = (dist/0.3048).toFixed(this.options.decimalPlaces);
+                        dist = (dist/0.3048).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 0 : this.options.decimalPlaces);
                         unit = this.options.unitControlLabel.feet;
                     }
                 }
@@ -658,16 +663,16 @@
             else {
                 unit = this.options.unitControlLabel.kilometres;
                 if (dist >= 100000) {
-                    dist = (dist/1000).toFixed(this.options.decimalPlaces);
+                    dist = (dist/1000).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 0 : this.options.decimalPlaces);
                 } else if (dist >= 10000) {
-                    dist = (dist/1000).toFixed(this.options.decimalPlaces);
+                    dist = (dist/1000).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 1 : this.options.decimalPlaces);
                 } else if (dist >= 1000) {
                     dist = (dist/1000).toFixed(this.options.decimalPlaces);
                 } else {
                     if (this.options.distanceShowSameUnit) {
-                        dist = (dist/1000).toFixed(this.options.decimalPlaces);
+                        dist = (dist/1000).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 3 : this.options.decimalPlaces);
                     } else {
-                        dist = (dist).toFixed(this.options.decimalPlaces);
+                        dist = (dist).toFixed(!this.options.alwaysUseDecimalPlacesOption ? 0 : this.options.decimalPlaces);
                         unit = this.options.unitControlLabel.metres;
                     }
                 }
@@ -772,8 +777,6 @@
 
             totalRound = this._getDistance (total);
             textCurrent += '<div class="polyline-measure-tooltip-total">' + totalRound.value + '&nbsp;' +  totalRound.unit + '</div>';
-            
-            console.log(this.options.unit, this.options.secondaryUnit);
 
             if(this.options.secondaryUnit !== null){
                 var tempUnit = this.options.unit;
@@ -783,7 +786,8 @@
                 textCurrent += '<div class="polyline-measure-tooltip-total">' + secondaryTotalRound.value + '&nbsp;' +  secondaryTotalRound.unit + '</div>';
             }
 
-            if(!this.options.showTooltip){
+            if(!this.options.showToolTips){
+                console.log(currentTooltip);
                 currentTooltip._icon.classList.add('polyline-measure-tooltip--hidden');
             }
 
@@ -845,6 +849,14 @@
                 className: 'polyline-measure-tooltip',
                 iconAnchor: [-4, -4]
             });
+
+            if(!this.options.showToolTips){
+                icon = L.divIcon({
+                    className: 'polyline-measure-tooltip polyline-measure-tooltip--hidden',
+                    iconAnchor: [-4, -4]
+                });
+            }
+
             var last = function() {
                 return this.slice(-1)[0];
             };

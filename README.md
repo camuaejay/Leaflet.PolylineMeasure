@@ -60,6 +60,10 @@ options = {
     clearControlClasses: [],        // Classes to apply to clear control button
     showUnitControl: false,         // Show a control to change the units of measurements
     distanceShowSameUnit: false,    // Keep same unit in tooltips in case of distance less then 1 km/mi/nm
+    secondaryUnit: null, // Secondary Unit for total distance
+    showDifference : true, // Show Difference values in the tooltip
+    decimalPlaces : 2, // Decimal Places for difference and total
+    alwaysUseDecimalPlacesOption : false, // Whether to use decimal places option including smaller values
     unitControlTitle: {             // Title texts to show on the Unit Control button
         text: 'Change Units',
         metres: 'metres',
